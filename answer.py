@@ -42,6 +42,21 @@ def savings_calculator(present_value, future_value, term, rate, end_of_period=Tr
     result = math.ceil(emi * 100) / 100
     return round(result, 2)
 
+def list_to_dict(data: list):
+    d={}
+    for i in data:
+        # print(i)
+        for k,v in i.items():
+            # print(k,v)
+            if k in d:
+                d[k].append(v)
+            else:
+                d[k]=[v]
+    return d
+
+    # result={ k:[v] for i in data for k,v in i.items() }
+    # return result
+
 
 if __name__ == "__main__":
     # print(simple_interest(123456, 23, 0.08))
@@ -50,4 +65,5 @@ if __name__ == "__main__":
     # print(compound_interest_with_payments(0,100,2,10,True))
     # print(compound_interest_with_payments(0, 368970.52, 35, 0.10))
     # print(compound_interest_with_payments(0, 100000, 35, 0.10))
-    print(savings_calculator(0, 1e8, 35, 0.10))
+    # print(savings_calculator(0, 1e8, 35, 0.10))
+    print(list_to_dict(data = [{"name": "a", "age": 21}, {"name": "b", "age": 43}]))

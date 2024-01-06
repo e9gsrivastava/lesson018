@@ -1,0 +1,6 @@
+name,age,city,is_married
+Alice,25,New York,True
+Bob,30,San Francisco,False
+Charlie,22,New York,True
+David,35,San Francisco,True
+Eva,28,New York,False

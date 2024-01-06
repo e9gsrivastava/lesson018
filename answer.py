@@ -106,4 +106,4 @@ if __name__ == "__main__":
     # print(savings_calculator(0, 1e8, 35, 0.10))
     # print(list_to_dict(data = [{"name": "a", "age": 21}, {"name": "b", "age": 43}]))
     # print(dict_to_list(data = {"name": ["a", "b"], "age": [21,43]}))
-    # files_innerjoin(filename1='f1.csv',f2='file2.csv',output_filename='out.csv',join_keys=['id'])
+    # files_innerjoin(filename1='f1.csv',f2='file2.csv',output_filename='results.csv',join_keys=['id'])

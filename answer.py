@@ -70,7 +70,10 @@ def dict_to_list(data):
 
 
 import csv
-def files_innerjoin(filename1, filename2,output_filename, join_keys):
+def files_innerjoin(filename1, filename2,**kwargs):
+    join_keys = kwargs.get("join_keys")
+    output_filename = kwargs.get("output_filename", "results.csv")
+
     data1={}
     with open(filename1,'r')as f:
         reader1=csv.DictReader(f)
@@ -91,6 +94,61 @@ def files_innerjoin(filename1, filename2,output_filename, join_keys):
         writer=csv.DictWriter(out_f,fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(joined_data)
+    
+def files_leftouterjoin(filename1, filename2, **kwargs):
+    join_keys = kwargs.get("join_keys")
+    output_filename = kwargs.get("output_filename", "results.csv")
+
+    data1 = {}
+    with open(filename1, 'r') as f:
+        reader1 = csv.DictReader(f)
+        for row in reader1:
+            key = tuple(row.get(key, None) for key in join_keys)
+            data1[key] = row
+
+    joined_data = []
+    with open(filename2, 'r') as f:
+        reader2 = csv.DictReader(f)
+        for row in reader2:
+            key = tuple(row.get(key, None) for key in join_keys)
+            if key in data1:
+                joined_data.append({**data1[key], **row})
+            else:
+                joined_data.append({**row, **{key: None for key in reader1.fieldnames}})
+
+    with open(output_filename, 'w', newline='') as out_f:
+        fieldnames = reader1.fieldnames + [f for f in reader2.fieldnames if f not in join_keys]
+        writer = csv.DictWriter(out_f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(joined_data)
+
+def files_rightouterjoin(filename1, filename2,**kwargs):
+    join_keys = kwargs.get("join_keys")
+    output_filename = kwargs.get("output_filename", "results.csv")
+
+    data1 = {}
+    with open(filename1, 'r') as f:
+        reader1 = csv.DictReader(f)
+        for row in reader1:
+            key = tuple(row.get(key, None) for key in join_keys)
+            data1[key] = row
+
+    joined_data = []
+    with open(filename2, 'r') as f:
+        reader2 = csv.DictReader(f)
+        for row in reader2:
+            key = tuple(row.get(key, None) for key in join_keys)
+            if key in data1:
+                joined_data.append({**data1[key], **row})
+            else:
+                joined_data.append({**{key: None for key in reader1.fieldnames}, **row})
+
+    with open(output_filename, 'w', newline='') as out_f:
+        fieldnames = [f for f in reader1.fieldnames if f not in join_keys] + reader2.fieldnames
+        writer = csv.DictWriter(out_f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(joined_data)
+
         
 
 
@@ -106,4 +164,6 @@ if __name__ == "__main__":
     # print(savings_calculator(0, 1e8, 35, 0.10))
     # print(list_to_dict(data = [{"name": "a", "age": 21}, {"name": "b", "age": 43}]))
     # print(dict_to_list(data = {"name": ["a", "b"], "age": [21,43]}))
-    # files_innerjoin(filename1='f1.csv',f2='file2.csv',output_filename='results.csv',join_keys=['id'])
+    # files_leftouterjoin(filename1='f1.csv', f2='file2.csv', join_keys=['id'])
+    # files_rightouterjoin(filename1='f1.csv', f2='file2.csv',  join_keys=['id'])
+    # files_innerjoin(filename1='f1.csv',f2='file2.csv',join_keys=['id'])

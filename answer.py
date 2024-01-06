@@ -68,6 +68,8 @@ def dict_to_list(data):
     
     return result
 
+
+import csv
 def files_innerjoin(filename1, filename2,output_filename, join_keys):
     data1={}
     with open(filename1,'r')as f:
@@ -80,14 +82,19 @@ def files_innerjoin(filename1, filename2,output_filename, join_keys):
         reader2=csv.DictReader(f)
         for row in reader2:
             key=tuple(row.get(key, None) for key in join_keys)
-            if key in data1:
-                joined_data.append(**data1[key],**row)
+            for k in key:
+                if key in data1:
+                    joined_data.append({**data1[key],**row})
 
     with open(output_filename, 'w', newline='') as out_f:
         fieldnames=reader1.fieldnames + [f for f in reader2.fieldnames if f not in join_keys]
         writer=csv.DictWriter(out_f,fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(joined_data)
+        
+
+
+
 
 
 
@@ -99,4 +106,4 @@ if __name__ == "__main__":
     # print(savings_calculator(0, 1e8, 35, 0.10))
     # print(list_to_dict(data = [{"name": "a", "age": 21}, {"name": "b", "age": 43}]))
     # print(dict_to_list(data = {"name": ["a", "b"], "age": [21,43]}))
-    # files_innerjoin(filename1='f1.csv',filename2='f2.csv',output_filename='out.csv',join_keys=['id'])
+    # files_innerjoin(filename1='file1.csv',filename2='file2.csv',output_filename='out.csv',join_keys=['id'])

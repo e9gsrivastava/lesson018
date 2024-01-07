@@ -1,6 +1,6 @@
 name,age,city,is_married
-Alice,25,New York,True
-Bob,30,San Francisco,False
-Charlie,22,New York,True
-David,35,San Francisco,True
-Eva,28,New York,False
+Alice,25,Nyc,True
+Ram,30,La,False
+Tom,22,Ny,True
+Akash,35,La,True
+Gaurav,28,Ny,False

@@ -3,18 +3,20 @@ import math
 import csv
 
 
-
 def indian_style_formating(num):
     """to get comma in indian style"""
 
     first, second = num, ""
-    if '.' in num:
-        first,second=num[:-3],num[-3:]
-    i=3
-    while i<len(first):
-        first=first[:-i]+','+first[-i:]
-        i+=3
-    return first+second
+
+    if "." in num:
+        first, second = num[:-3], num[-3:]
+
+    i = 3
+    while i < len(first):
+        first = first[:-i] + "," + first[-i:]
+        i += 3
+
+    return first + second
 
 
 def simple_interest(principal, term, rate):
@@ -92,19 +94,20 @@ def files_innerjoin(filename1, filename2, **kwargs):
         for row in reader1:
             key = tuple(row.get(key, None) for key in join_keys)
             data1[key] = row
+
     joined_data = []
     with open(filename2, "r", encoding="utf-8") as f:
         reader2 = csv.DictReader(f)
         for row in reader2:
             key = tuple(row.get(key, None) for key in join_keys)
-            for _ in key:
-                if key in data1:
-                    joined_data.append({**data1[key], **row})
+            if key in data1:
+                data1[key].update(row)
+                joined_data.append(data1[key].copy())
+
+    fieldnames_set = set(reader2.fieldnames) - set(join_keys)
+    fieldnames = reader1.fieldnames + list(fieldnames_set)
 
     with open(output_filename, "w", encoding="utf-8", newline="") as out_f:
-        fieldnames = reader1.fieldnames + [
-            f for f in reader2.fieldnames if f not in join_keys
-        ]
         writer = csv.DictWriter(out_f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(joined_data)
@@ -128,21 +131,24 @@ def files_leftouterjoin(filename1, filename2, **kwargs):
         for row in reader2:
             key = tuple(row.get(key, None) for key in join_keys)
             if key in data1:
-                joined_data.append({**data1[key], **row})
+                data1[key].update(row)
+                joined_data.append(data1[key].copy())
             else:
-                joined_data.append({**row, **{key: None for key in reader1.fieldnames}})
+                updated_row = row.copy()
+                updated_row.update({key: None for key in reader1.fieldnames})
+                joined_data.append(updated_row)
+
+    fieldnames_set = set(reader1.fieldnames) | set(reader2.fieldnames) - set(join_keys)
+    fieldnames = list(fieldnames_set)
 
     with open(output_filename, "w", encoding="utf-8", newline="") as out_f:
-        fieldnames = reader1.fieldnames + [
-            f for f in reader2.fieldnames if f not in join_keys
-        ]
         writer = csv.DictWriter(out_f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(joined_data)
 
 
 def files_rightouterjoin(filename1, filename2, **kwargs):
-    """outer join"""
+    """right outer join"""
     join_keys = kwargs.get("join_keys")
     output_filename = kwargs.get("output_filename", "results.csv")
 
@@ -159,14 +165,15 @@ def files_rightouterjoin(filename1, filename2, **kwargs):
         for row in reader2:
             key = tuple(row.get(key, None) for key in join_keys)
             if key in data1:
-                joined_data.append({**data1[key], **row})
+                data1[key].update(row)
+                joined_data.append(data1[key].copy())
             else:
                 joined_data.append({**{key: None for key in reader1.fieldnames}, **row})
 
+    fieldnames_set = set(reader1.fieldnames) - set(join_keys) | set(reader2.fieldnames)
+    fieldnames = list(fieldnames_set)
+
     with open(output_filename, "w", encoding="utf-8", newline="") as out_f:
-        fieldnames = [
-            f for f in reader1.fieldnames if f not in join_keys
-        ] + reader2.fieldnames
         writer = csv.DictWriter(out_f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(joined_data)

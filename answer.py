@@ -168,7 +168,9 @@ def files_rightouterjoin(filename1, filename2, **kwargs):
                 data1[key].update(row)
                 joined_data.append(data1[key].copy())
             else:
-                joined_data.append({**{key: None for key in reader1.fieldnames}, **row})
+                default_data = {key: None for key in reader1.fieldnames}
+                default_data.update(row)
+                joined_data.append(default_data)
 
     fieldnames_set = set(reader1.fieldnames) - set(join_keys) | set(reader2.fieldnames)
     fieldnames = list(fieldnames_set)

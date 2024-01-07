@@ -3,17 +3,18 @@ import math
 import csv
 
 
+
 def indian_style_formating(num):
     """to get comma in indian style"""
 
-    first, second, size = num, "", len(num)
-    if "." in num:
-        first, second, size = num[:-3], num[-3:], size - 3
-    index = 3
-    while index < len(first):
-        first = first[:-index] + "," + first[-index:]
-        index += 3
-    return first + second
+    first, second = num, ""
+    if '.' in num:
+        first,second=num[:-3],num[-3:]
+    i=3
+    while i<len(first):
+        first=first[:-i]+','+first[-i:]
+        i+=3
+    return first+second
 
 
 def simple_interest(principal, term, rate):
